@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>Find Me On GitHub</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-3">
+        <div class="container">
+            
+            <a href="/" class = "navbar-brand">FindGitHub</a>
+        </div>
+    </nav>
+    <div class="container searchContainer">
+        <div class="search card card-body">
+            <h3>Search GitHub Users</h3>
+            <p class="lead">
+                Type a username and see infos.
+            </p>
+            <form action="/" method="POST">
+                {% csrf_token %}
+                <input type="text" name="githubusername" class = "form-control" placeholder="GitHub Username">
+                <br>
+                <button type = "submit" class ="btn rounded-pill btn-dark">Search</button>
+            </form>
+        </div>
+        <br>
+        {% if profile %}
+
+        <div id="profile">            
+          <div class="card card-body mb-3">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <img class="img-fluid mb-2" src="{{profile.avatar_url}}">
+                      <a href="{{profile.html_url}}" target="_blank" class="btn btn-dark rounded-pill btn-block mb-4">Visit User's GitHub Page</a>
+                    </div>
+                    <div class="col-md-9">
+                      <span class="badge rounded-pill bg-primary">Public Repos: {{profile.public_repos}} </span>
+                      <span class="badge rounded-pill bg-danger">Public Gists: {{profile.public_gists}}  </span>
+                      <span class="badge rounded-pill bg-success">Followers: {{profile.followers}} </span>
+                      <span class="badge rounded-pill bg-warning">Following: {{profile.following}} </span>
+                      <br><br>
+                      <ul class="list-group">
+                        <li class="list-group-item">Company: {{profile.company}}</li>
+                        <li class="list-group-item">Website/Blog: {{profile.blog}}</li>
+                        <li class="list-group-item">Location: {{profile.location}}</li>
+                        <li class="list-group-item">Registered since:  {{profile.created_at}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <h3 class="page-heading mb-3">Latest Repos</h3>
+                <div id="repos" style ="margin-bottom: 100px;">
+                     
+                        {% for repo in repos %}
+                        <div class="card card-body mb-2">   
+                          <div class="row">
+                            <div class="col-md-6 d-flex align-items-center">
+                              <div class="col-md-8">
+                                  <div class="row">
+                                      <div class="col-md-8">
+                                          <span>{{repo.name}}</span>
+                                      </div>
+                                      <div class="col-md-4">
+                                          <a href="{{repo.html_url}}" target="_blank" class="btn rounded-pill btn-dark">See Repo</a>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-md-6">
+                                  <div class="d-flex flex-wrap justify-content-between">
+                                      <div>
+                                          <span class="badge rounded-pill bg-primary">Stars: {{repo.stargazers_count}}</span>
+                                          <span class="badge rounded-pill bg-danger">Watchers: {{repo.watchers_count}}</span>
+                                          <span class="badge rounded-pill bg-success">Forks: {{repo.forks_count}}</span>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+
+                </div>
+
+        {% else %}
+
+          {% if messages %}
+          
+            {% for message in messages %}
+              
+              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          
+            {% endfor %}
+          
+          {% endif %}
+
+        {% endif %}
+        
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.7.0.min.js' %}"></script>
+</body>
+</html>
